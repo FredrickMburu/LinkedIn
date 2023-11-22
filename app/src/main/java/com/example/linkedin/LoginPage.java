@@ -67,9 +67,8 @@ public class LoginPage extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("FB_AUTH", "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
                                 Toast.makeText(LoginPage.this,"Signed in Successful",Toast.LENGTH_SHORT).show();
-//                                updateUI(user);
+
                                 Intent i = new Intent(LoginPage.this, SignUp.class);
                                 startActivity(i);
                             } else {
@@ -77,7 +76,6 @@ public class LoginPage extends AppCompatActivity {
                                 Log.w("FB_AUTH", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(LoginPage.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
-//                                updateUI(null);
                             }
                         }
                     });
