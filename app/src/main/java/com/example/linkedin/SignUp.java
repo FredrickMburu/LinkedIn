@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
 
@@ -32,7 +32,7 @@ public class SignUp extends AppCompatActivity {
     ImageView imageView;
     Spinner spinner;
     String userID;
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     FirebaseFirestore fStore;
     @Override
     public void onStart() {
@@ -64,49 +64,50 @@ public class SignUp extends AppCompatActivity {
 
         fStore = FirebaseFirestore.getInstance();
 
-        sign_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        sign_btn.setOnClickListener(v -> {
 
-                String selectedValue = spinner.getSelectedItem().toString();
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
-                String phoneNumber = String.valueOf(inputPhoneNumber.getText());
+            String selectedValue = spinner.getSelectedItem().toString();
+            String email = inputEmail.getText().toString().trim();
+            String password = inputPassword.getText().toString().trim();
+            String phoneNumber = String.valueOf(inputPhoneNumber.getText());
+            String name = userName.getText().toString().trim();
 
 
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(SignUp.this, task -> {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d(TAG, "createUserWithEmail:success");
-                                userID = mAuth.getCurrentUser().getUid();
-                                DocumentReference documentReference = fStore.collection("users").document(userID);
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(SignUp.this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
 
-                                Map<String,Object> user = new HashMap<>();
-                                user.put("email",email);
-                                user.put("password",password);
-                                user.put("phoneNumber",phoneNumber);
-                                user.put("selectedValue",selectedValue);
-                                documentReference.set(user).addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: user profile is created for" + userID)).addOnFailureListener(e -> Log.d(TAG,"onFailure " + e ));
+                            Log.d(TAG, "createUserWithEmail:success");
+                            userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                            DocumentReference documentReference = fStore.collection("users").document(userID);
 
-                                startActivity(new Intent(getApplicationContext(), forgot_password.class));
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(SignUp.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
+                            Map<String,Object> user = new HashMap<>();
+                            user.put("name",name);
+                            user.put("email",email);
+                            user.put("password",password);
+                            user.put("phoneNumber",phoneNumber);
+                            user.put("selectedValue",selectedValue);
+                            documentReference.set(user)
+                                    .addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: user profile is created for" + userID))
+                                    .addOnFailureListener(e -> Log.d(TAG,"onFailure " + e ));
+
+                            Toast.makeText(SignUp.this, "signed-in successfully",
+                                    Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), logout.class));
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(SignUp.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
-        imageView.setOnClickListener(new View.OnClickListener() {
-          @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
-          }
-      });
+        imageView.setOnClickListener(v -> {
+              Intent intent = new Intent(Intent.ACTION_PICK);
+              intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+              startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        });
     }
       protected void onActivityResult(int requestCode, int resultCode, Intent data) {
           super.onActivityResult(requestCode, resultCode, data);

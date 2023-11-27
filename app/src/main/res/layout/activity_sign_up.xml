@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="30dp"
     android:layout_gravity="center"
@@ -67,6 +68,7 @@
         android:hint="@string/password"
         android:textSize="18sp"
         android:background="@drawable/input_border"
+        app:passwordToggleEnabled="true"
         />
     <EditText
         android:autofillHints="password"
@@ -79,6 +81,7 @@
         android:hint="@string/confirm_password"
         android:textSize="18sp"
         android:background="@drawable/input_border"
+        app:passwordToggleEnabled="true"
         />
     <LinearLayout
         android:layout_width="match_parent"

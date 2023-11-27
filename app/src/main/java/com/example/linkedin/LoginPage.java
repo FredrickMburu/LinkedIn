@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -55,7 +56,7 @@ public class LoginPage extends AppCompatActivity {
             startActivity(p);
         });
 
-
+        sign_up_btn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SignUp.class)));
         log_in_btn.setOnClickListener(v -> {
 
             email = email_input.getText().toString().trim();
@@ -69,7 +70,7 @@ public class LoginPage extends AppCompatActivity {
                                 Log.d("FB_AUTH", "signInWithEmail:success");
                                 Toast.makeText(LoginPage.this,"Signed in Successful",Toast.LENGTH_SHORT).show();
 
-                                Intent i = new Intent(LoginPage.this, SignUp.class);
+                                Intent i = new Intent(LoginPage.this,logout.class);
                                 startActivity(i);
                             } else {
                                 // If sign in fails, display a message to the user.
